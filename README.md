@@ -93,25 +93,27 @@ flowchart TB
   ELGS --> NOTS
 ```
 
-### 1.2 Deployment Topology Diagram
+### 1.2 Execution Topology Diagram (Local & Containerized)
 ```mermaid
 flowchart LR
-  U["Browser: citizen or officer"] --> CDN["Static hosting for React build (Vercel / Netlify / Cloudflare Pages)"]
-  U --> APIH["FastAPI on a free web service (Render or similar)"]
-  APIH --> PG[("Free managed PostgreSQL (Neon or Supabase)")]
-  APIH --> MOCK["Mock source systems (in-process modules)"]
-  DEV["Local machine"] --> SQL[("SQLite file")]
-  DEV --> APIL["FastAPI + Vite dev server"]
+  U["Browser: Citizen or Department Officer"] --> FE["Frontend (React + Vite + Tailwind CSS)"]
+  FE --> BE["Backend API (FastAPI + SQLAlchemy)"]
+  BE --> DB[("SQLite DB / PostgreSQL")]
+  BE --> RULE["Rules Engine (Declarative YAML)"]
+  BE --> AI["Aapnu Mitra Chatbot & Anomaly Engine"]
 ```
 
 ---
 
 ## 🚀 2. Core Functional Modules & User Flows
 
-### 2.1 Unified Login & Role-Based Portal
-- **Common Portal**: Supports sign-in via 10-digit Citizen Mobile Numbers or Official Department Email accounts (`admin@gujarat.gov.in`).
-- **First-Time Password Setup**: Automatically prompts citizens to establish a secure password upon initial registration.
-- **Intelligent Role Routing**: Automatically directs citizens to `/my-family` and officers to their jurisdiction dashboard (`/officer`).
+### 2.1 Unified Common Login Portal & Intelligent Role Routing
+- **Dual-Mode Sign-In**: Supports sign-in via **10-Digit Citizen Mobile Number + Password** or **Gmail / Google Account OAuth (Simulated)**.
+- **Unified Portal for Citizens & Officers**: Single portal handles both citizen families and government officials.
+- **Intelligent Role-Based Routing**:
+  - Official Department Emails (e.g. `admin@gujarat.gov.in`) automatically route to the **Departmental Officer Console** (`/officer`).
+  - Family Mobile & Citizen logins automatically route to the **Citizen Family Portal** (`/my-family`).
+- **First-Time Registration & Password Management**: Prompts first-time registrants to set up their password during family onboarding and enables authenticated password updates (`POST /api/v1/auth/password/change`).
 
 ### 2.2 Family & Membership Lifecycle
 A family is tracked through an explicit state lifecycle ensuring only valid, verified households receive government benefits.
@@ -154,13 +156,15 @@ flowchart TD
 ---
 
 ### 2.3 Household Division & Lineage Split Engine
-When adult family members form independent nuclear households (e.g. after marriage or economic separation), citizens can initiate a 4-step division wizard:
-1. **Member Selection**: Select members separating from the original family.
-2. **New Family Head Assignment**: Nominate a verified adult as the head of the new family.
-3. **Address & Income Declaration**: Declare new residence and income band.
-4. **Automated Risk Scoring (0–100)**:
-   - **Low Risk ($\le 50$)**: Immediate auto-approval with new Verhoeff Family ID issuance.
-   - **High Risk ($> 50$)**: Automatically routed to district officer queue for review.
+When adult family members form independent nuclear households (e.g. upon marriage or economic division), citizens can initiate the 4-step **Family Split Wizard** (`FamilySplitWizardModal.tsx`):
+1. **Select Moving Members**: Choose adult members and dependents leaving the original family.
+2. **Nominate New Family Head**: Designate a verified adult to head the new household.
+3. **Declare Address & Income**: Provide updated residential details, pincode, and household income band.
+4. **Review & Automated Risk Assessment (0–100)**:
+   - **Low Risk ($\le 50$)**: Immediate auto-approval with issuance of a new 12-Digit Verhoeff Family ID (`GJ-DD-YY-SSSSSSS-C`).
+   - **High Risk ($> 50$)**: Formally submitted to the District Officer review queue.
+   - Modal action buttons cleanly labeled **Close** for intuitive user navigation.
+   - Preserves complete historical lineage records (`parent_family_id`, `child_family_id`).
 
 #### Household Split Workflow Diagram
 ```mermaid
@@ -223,10 +227,9 @@ stateDiagram-v2
 ---
 
 ### 2.5 Aapnu Mitra AI Chatbot Widget
-A floating interactive widget rendered with high-contrast styling (`text-amber-400` on dark slate background) providing instant 24/7 assistance on:
-- Scheme eligibility criteria and document requirements.
-- Step-by-step guidance on household splits and new Family ID generation.
-- Identity verification and document vault status.
+An interactive floating assistant widget (`AIChatbotWidget.tsx`) integrated across citizen and officer dashboards powered by `POST /api/v1/chatbot/query`:
+- **High-Contrast Design**: Styled with a dark slate background (`bg-slate-900`) and high-visibility gold text (`text-amber-400`).
+- **Real-Time Guidance**: Offers instant answers regarding state scheme criteria, document vault verifications, step-by-step lineage splits, and Family ID lookups.
 
 ---
 
