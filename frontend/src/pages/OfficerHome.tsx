@@ -7,6 +7,8 @@ import {
 } from 'lucide-react';
 import { OfficerReviewQueue } from '../components/OfficerReviewQueue';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
+
 export const OfficerHome: React.FC = () => {
   const [district, setDistrict] = useState<string>('STATEWIDE');
   const [searchFamilyId, setSearchFamilyId] = useState<string>('GJ-07-26-4831927-1');
@@ -18,7 +20,7 @@ export const OfficerHome: React.FC = () => {
   const { data: overview } = useQuery({
     queryKey: ['officer-overview-kpi'],
     queryFn: async () => {
-      const res = await fetch('/api/v1/analytics/overview');
+      const res = await fetch(`${API_BASE_URL}/analytics/overview`);
       if (!res.ok) return null;
       return res.json();
     },
@@ -30,7 +32,7 @@ export const OfficerHome: React.FC = () => {
     setInspectLoading(true);
     setInspectError(null);
     try {
-      const res = await fetch(`/api/v1/families/${searchFamilyId.trim()}`);
+      const res = await fetch(`${API_BASE_URL}/families/${searchFamilyId.trim()}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || 'Family ID record not found in Gujarat state registry.');
       setInspectedFamily(data);
