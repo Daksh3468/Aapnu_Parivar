@@ -961,4 +961,30 @@ pytest
 
 ---
 
+## 🔑 7. Default Demo Credentials
+
+Use these pre-seeded credentials to explore and test the platform:
+
+### 🏛️ Government Official & Admin Logins
+*(Routes automatically to the **Departmental Officer Console** at `/officer`)*
+
+| Role | Login Identifier | Default Password | Jurisdiction Scope |
+|---|---|---|---|
+| **State Admin** | `admin@gujarat.gov.in` | `Admin@123` | Statewide (All Gujarat Districts) |
+| **District Officer** | `district07@gujarat.gov.in` | `District@123` | District 07 (Bhavnagar) |
+| **Field Officer** | `field0701@gujarat.gov.in` | `Field@123` | Pincode 364001 |
+
+### 🏡 Citizen & Family Portal Login
+*(Routes automatically to the **Citizen Family Portal** at `/my-family`)*
+
+| Role | Login Identifier | Default Password | Access Features |
+|---|---|---|---|
+| **Family Head** | `9876543210` | `Citizen@123` | Household Entitlements, Verhoeff Family ID, Member Roster, 4-Step Household Split Wizard, Document Vault, and **Aapnu Mitra AI Chatbot** |
+
+### 💡 Google OAuth (Gmail) Login Simulation
+- Signing in via the **Google Sign-In** tab using an official email ending in `@gujarat.gov.in` (e.g. `admin@gujarat.gov.in`) automatically grants **Officer Dashboard** access.
+- Signing in using any standard Gmail address (e.g. `citizen@gmail.com`) automatically routes to the **Citizen Family Portal**.
+
+---
+
 *Aapnu Parivar — One Family. One ID. Every Benefit.*
